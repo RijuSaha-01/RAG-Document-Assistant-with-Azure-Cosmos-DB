@@ -1,0 +1,76 @@
+# ============================================================================
+# Document Chat Assistant with Cosmos DB - Dependencies
+# ============================================================================
+# This file contains all required Python packages for the Document Chat Assistant
+# Install with: pip install -r requirements.txt
+# ============================================================================
+
+# Core Web Framework
+# ----------------------------------------------------------------------------
+flask>=2.3.0                    # Web framework for REST API
+flask-cors>=4.0.0               # Cross-Origin Resource Sharing support
+werkzeug>=2.3.0                 # WSGI utilities (Flask dependency)
+
+# Environment and Configuration Management
+# ----------------------------------------------------------------------------
+python-dotenv>=1.0.0            # Load environment variables from .env file
+
+# AI and Machine Learning
+# ----------------------------------------------------------------------------
+openai>=1.99.0                  # OpenAI API client for GPT-4 and embeddings
+langchain>=0.3.0                # LangChain framework for LLM applications
+langchain-openai>=0.3.0         # OpenAI integration for LangChain
+
+# Database and Vector Storage
+# ----------------------------------------------------------------------------
+pymongo>=4.6.0                  # MongoDB driver for Cosmos DB connectivity
+
+# Document Processing Libraries
+# ----------------------------------------------------------------------------
+# PDF Processing
+PyMuPDF>=1.23.0                 # Primary PDF processing library (fitz)
+pypdf>=4.0.0                    # Alternative PDF processing library
+
+# Microsoft Office Documents
+python-pptx>=0.6.21             # PowerPoint file processing
+python-docx>=1.1.0              # Word document processing
+
+# Image Processing and OCR
+Pillow>=10.0.0                  # Image processing library
+pytesseract>=0.3.10             # OCR capabilities for image text extraction
+
+# Scientific Computing and Utilities
+# ----------------------------------------------------------------------------
+numpy>=1.24.0                   # Numerical computing for embeddings and similarity
+requests>=2.31.0                # HTTP library for API calls
+
+# Text Processing and NLP
+# ----------------------------------------------------------------------------
+# Note: Additional text processing libraries are included via langchain
+
+# Windows-Specific Dependencies (Optional)
+# ----------------------------------------------------------------------------
+# PowerPoint COM integration for advanced presentation features
+pywin32>=306; sys_platform == "win32"
+
+# Development and Testing (Optional)
+# ----------------------------------------------------------------------------
+# Uncomment these for development environment
+# pytest>=7.0.0                 # Testing framework
+# black>=23.0.0                 # Code formatting
+# flake8>=6.0.0                 # Code linting
+
+# ============================================================================
+# Installation Notes:
+# ============================================================================
+# 1. Python 3.8+ required
+# 2. Windows users get PowerPoint COM integration automatically
+# 3. Linux/Mac users will have basic PowerPoint generation without COM
+# 4. Some packages may require system dependencies (e.g., tesseract for OCR)
+# 
+# For Ubuntu/Debian systems, you may need:
+# sudo apt-get install tesseract-ocr
+# 
+# For macOS with Homebrew:
+# brew install tesseract
+# ============================================================================

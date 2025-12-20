@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Document Chat Assistant v3.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .features-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .chat-section {
+            flex: 2;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .panel h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            border: 2px solid #f0f2f5;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow-y: auto;
+            max-height: 500px;
+            background: #fafbfc;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: 20%;
+            text-align: right;
+        }
+
+        .bot-message {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            margin-right: 20%;
+        }
+
+        .sources {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .source-item {
+            background: #fff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            margin: 0.2rem;
+            display: inline-block;
+            border: 1px solid #ddd;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #userInput {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 50px;
+            max-height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        #userInput:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-label:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .documents-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .document-size {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .status {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .format-selector {
+            margin-bottom: 1rem;
+        }
+
+        .format-selector select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .user-message, .bot-message {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Enhanced Document Chat Assistant v3.0 – by &lt;YOUR NAME&gt;</h1>
+        <p>Powered by Advanced AI with LLM Query Expansion & Smart Reranking</p>
+        <div class="features-badge">
+            ✨ v3.0 • LLM Reranking • Metadata Enrichment • Auto-PPT Generation
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="chat-section">
+            <div class="format-selector">
+                <label for="responseFormat">Response Format:</label>
+                <select id="responseFormat">
+                    <option value="standard">Standard (Detailed)</option>
+                    <option value="executive">Executive Summary</option>
+                </select>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot-message">
+                    <strong>🚀 Welcome to Enhanced Document Chat Assistant v3.0!</strong>
+                    <br><br>
+                    New features include:
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>🧠 <strong>LLM Query Expansion</strong> - Automatically generates alternative phrasings</li>
+                        <li>🎯 <strong>Smart Reranking</strong> - AI scores relevance for higher accuracy</li>
+                        <li>🏷️ <strong>Metadata Enrichment</strong> - AI-enhanced topic tags and importance</li>
+                        <li>🔄 <strong>Failure Recovery</strong> - Automatic query reformulation</li>
+                        <li>📊 <strong>Auto-PPT Generation</strong> - Creates presentations from cited sources</li>
+                    </ul>
+                    <br>
+                    Upload documents using the panel on the right, then ask questions about their content!
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <textarea id="userInput" placeholder="Ask questions about your uploaded documents..." rows="3"></textarea>
+                </div>
+                <button id="sendBtn" class="btn" onclick="sendMessage()">
+                    <span>📤 Send</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="panel">
+                <h3>📁 Upload Documents</h3>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.pptx,.pptm,.docm" onchange="uploadFile()">
+                    <div class="file-input-label">
+                        <span>📎</span>
+                        <span>Choose file or drag & drop</span>
+                    </div>
+                </div>
+                <div id="uploadStatus"></div>
+            </div>
+
+            <div class="panel">
+                <h3>📚 Knowledge Base</h3>
+                <div id="documentsList" class="documents-list">
+                    <p style="text-align: center; color: #666;">Loading documents...</p>
+                </div>
+                <button class="btn" onclick="loadDocuments()" style="width: 100%; margin-top: 1rem;">
+                    🔄 Refresh List
+                </button>
+            </div>
+
+            <div class="panel">
+                <h3>🔍 Analyze Similarity</h3>
+                <div class="file-input-wrapper">
+                    <input type="file" id="analyzeInput" class="file-input" accept=".pdf,.docx,.pptx,.pptm,.docm" onchange="analyzeDocument()">
+                    <div class="file-input-label">
+                        <span>🔍</span>
+                        <span>Check similarity</span>
+                    </div>
+                </div>
+                <div id="analysisResults"></div>
+            </div>
+
+            <div class="panel">
+                <h3>📊 Current Conversation</h3>
+                <div id="conversationInfo" class="conversation-info">
+                    <p style="color: #666; font-style: italic;">No active conversation</p>
+                </div>
+                <button onclick="clearConversation()" class="btn btn-secondary" style="width: 100%; margin-top: 10px; background: #ff6b6b;">
+                    🗑️ Clear Conversation
+                </button>
+                <button onclick="generatePPTFromCurrent()" class="btn btn-primary" id="generatePPTBtn" style="width: 100%; margin-top: 10px;" disabled>
+                    📊 Generate PPT from Current
+                </button>
+            </div>
+
+            <div class="panel">
+                <h3>⚡ Quick Actions</h3>
+                <button class="btn" onclick="showHelp()" style="width: 100%; margin-bottom: 0.5rem;">
+                    ❓ Help & Commands
+                </button>
+                <button class="btn" onclick="checkHealth()" style="width: 100%;">
+                    🏥 System Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced JavaScript with improved error handling and new features
+        let isLoading = false;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDocuments();
+            updateConversationInfo();
+            
+            // Enter key handling for textarea
+            document.getElementById('userInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+
+        async function sendMessage() {
+            if (isLoading) return;
+            
+            const userInput = document.getElementById('userInput');
+            const responseFormat = document.getElementById('responseFormat').value;
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Set loading state
+            isLoading = true;
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<div class="loading"><div class="spinner"></div><span>Processing...</span></div>';
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        message: message,
+                        format: responseFormat,
+                        auto_generate_ppt: true
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    addMessage(data.response || data.summary || 'No response received', 'bot', data.sources, data.presentation_path);
+                    // Update conversation info after each response
+                    updateConversationInfo();
+                } else {
+                    addMessage(`Error: ${data.error || 'Unknown error occurred'}`, 'bot');
+                }
+            } catch (error) {
+                addMessage(`Connection Error: ${error.message}`, 'bot');
+            } finally {
+                // Reset loading state
+                isLoading = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<span>📤 Send</span>';
+            }
+        }
+
+        function addMessage(message, type, sources = null, presentationPath = null, responseData = null) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            
+            let html = `<div>${formatMessage(message)}</div>`;
+            
+            if (sources && sources.length > 0) {
+                html += '<div class="sources"><strong>📄 Sources:</strong><br>';
+                sources.forEach(source => {
+                    html += `<span class="source-item">${source}</span>`;
+                });
+                html += '</div>';
+            }
+            
+            if (presentationPath) {
+                html += `<div style="margin-top: 10px;"><strong>📊 Presentation Generated:</strong> ${presentationPath}</div>`;
+            }
+            
+            // Add PPT generation button for bot messages
+            if (type === 'bot' && responseData) {
+                html += `
+                    <div class="ppt-generation" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: bold; color: #667eea;">📊 Generate PowerPoint</span>
+                            <button onclick="generatePPT('${encodeURIComponent(JSON.stringify(responseData))}')" 
+                                    class="ppt-btn" 
+                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                           color: white; 
+                                           border: none; 
+                                           padding: 8px 16px; 
+                                           border-radius: 20px; 
+                                           cursor: pointer; 
+                                           font-size: 14px; 
+                                           font-weight: bold;
+                                           transition: all 0.3s ease;
+                                           box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);">
+                                🎯 Generate & Download PPT
+                            </button>
+                        </div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                            Click to create a PowerPoint presentation from this conversation
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = html;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function formatMessage(message) {
+            // Enhanced message formatting with error handling
+            if (!message || typeof message !== 'string') {
+                return message || '';
+            }
+            return message
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>')
+                .replace(/^- (.*$)/gm, '• $1');
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            if (!file) return;
+
+            statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><span>Uploading and processing...</span></div>';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/add', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.innerHTML = `<div class="status success">✅ ${data.message}</div>`;
+                    loadDocuments(); // Refresh the documents list
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Upload failed: ${error.message}</div>`;
+            } finally {
+                fileInput.value = ''; // Clear file input
+            }
+        }
+
+        async function loadDocuments() {
+            const documentsList = document.getElementById('documentsList');
+            documentsList.innerHTML = '<p style="text-align: center; color: #666;">Loading...</p>';
+
+            try {
+                const response = await fetch('/api/list');
+                const data = await response.json();
+
+                if (response.ok && data.documents) {
+                    if (data.documents.length === 0) {
+                        documentsList.innerHTML = '<p style="text-align: center; color: #666;">No documents uploaded yet</p>';
+                    } else {
+                        documentsList.innerHTML = '';
+                        data.documents.forEach(doc => {
+                            const docDiv = document.createElement('div');
+                            docDiv.className = 'document-item';
+                            docDiv.innerHTML = `
+                                <div class="document-info">
+                                    <div class="document-name">📄 ${doc.filename}</div>
+                                    <div class="document-size">${doc.size} • ${doc.type}</div>
+                                </div>
+                                <button class="delete-btn" onclick="deleteDocument('${doc.filename}')">🗑️</button>
+                            `;
+                            documentsList.appendChild(docDiv);
+                        });
+                    }
+                } else {
+                    documentsList.innerHTML = `<p style="color: red;">Error loading documents: ${data.error}</p>`;
+                }
+            } catch (error) {
+                documentsList.innerHTML = `<p style="color: red;">Failed to load: ${error.message}</p>`;
+            }
+        }
+
+        async function deleteDocument(filename) {
+            if (!confirm(`Are you sure you want to delete "${filename}"?`)) return;
+
+            try {
+                const response = await fetch('/api/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ filename: filename }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    loadDocuments(); // Refresh the list
+                    addMessage(`Document "${filename}" deleted successfully.`, 'bot');
+                } else {
+                    addMessage(`Error deleting document: ${data.error}`, 'bot');
+                }
+            } catch (error) {
+                addMessage(`Delete failed: ${error.message}`, 'bot');
+            }
+        }
+
+        async function analyzeDocument() {
+            const analyzeInput = document.getElementById('analyzeInput');
+            const file = analyzeInput.files[0];
+            const resultsDiv = document.getElementById('analysisResults');
+            
+            if (!file) return;
+
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div><span>Analyzing...</span></div>';
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.similar_documents) {
+                    if (data.similar_documents.length === 0) {
+                        resultsDiv.innerHTML = '<p>No similar documents found.</p>';
+                    } else {
+                        let html = '<div style="font-size: 0.9rem;"><strong>Similar documents:</strong><br>';
+                        data.similar_documents.forEach(doc => {
+                            html += `<div style="margin: 0.3rem 0; padding: 0.3rem; background: #f0f0f0; border-radius: 4px;">
+                                📄 ${doc.filename} (${doc.similarity_score} match)
+                            </div>`;
+                        });
+                        html += '</div>';
+                        resultsDiv.innerHTML = html;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<div class="status error">Analysis failed: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">Analysis failed: ${error.message}</div>`;
+            } finally {
+                analyzeInput.value = ''; // Clear file input
+            }
+        }
+
+        function showHelp() {
+            const helpMessage = `
+                <strong>🎯 Enhanced Document Chat Assistant v3.0 - Help</strong><br><br>
+                
+                <strong>📤 How to Use:</strong><br>
+                1. Upload documents using the upload panel<br>
+                2. Ask questions about your document content<br>
+                3. Get AI-powered answers with citations<br><br>
+                
+                <strong>🚀 New Features:</strong><br>
+                • <strong>LLM Query Expansion:</strong> Automatically generates alternative phrasings<br>
+                • <strong>Smart Reranking:</strong> AI scores chunks for better relevance<br>
+                • <strong>Metadata Enrichment:</strong> AI tags content with topics and importance<br>
+                • <strong>Failure Recovery:</strong> Automatic query reformulation when needed<br>
+                • <strong>Auto-PPT:</strong> Generates PowerPoint from cited sources<br><br>
+                
+                <strong>📁 Supported Files:</strong><br>
+                PDF, DOCX, PPTX, PPTM, DOCM<br><br>
+                
+                <strong>💡 Tips:</strong><br>
+                • Be specific in your questions<br>
+                • Use "Executive Summary" format for concise answers<br>
+                • Check similarity before uploading duplicates<br>
+                • The system will cite sources automatically
+            `;
+            
+            addMessage(helpMessage, 'bot');
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                let healthMessage = `
+                    <strong>🏥 System Health Status</strong><br><br>
+                    <strong>Status:</strong> ${data.status}<br>
+                    <strong>Version:</strong> ${data.version || '3.0'}<br>
+                    <strong>Chatbot:</strong> ${data.chatbot_initialized ? '✅ Active' : '❌ Inactive'}<br>
+                    <strong>API Key:</strong> ${data.api_key_configured ? '✅ Configured' : '❌ Missing'}<br>
+                `;
+                
+                if (data.features && typeof data.features === 'object') {
+                    healthMessage += '<br><strong>🚀 Active Features:</strong><br>';
+                    Object.entries(data.features).forEach(([key, value]) => {
+                        if (key && typeof key === 'string') {
+                            const icon = value ? '✅' : '❌';
+                            const name = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            healthMessage += `${icon} ${name}<br>`;
+                        }
+                    });
+                }
+                
+                addMessage(healthMessage, 'bot');
+            } catch (error) {
+                addMessage(`Health check failed: ${error.message}`, 'bot');
+            }
+        }
+
+        async function updateConversationInfo() {
+            try {
+                const response = await fetch('/api/conversation-info');
+                const data = await response.json();
+                
+                const infoDiv = document.getElementById('conversationInfo');
+                const generateBtn = document.getElementById('generatePPTBtn');
+                
+                if (data.has_conversation) {
+                    infoDiv.innerHTML = `
+                        <div style="background: #e8f5e8; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                            <strong>📝 Active Query:</strong><br>
+                            <em style="color: #666;">${data.query}</em>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span><strong>📄 Sources:</strong> ${data.source_count}</span>
+                            <span><strong>📊 PPT Ready:</strong> ${data.can_generate_ppt ? '✅' : '❌'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em; color: #666;">
+                            <span>Chunks: ${data.chunks_count || 0}</span>
+                            <span>Response: ${data.response_length || 0} chars</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em; color: #666;">
+                            <span>Reconstructed: ${data.reconstructed_count || 0}</span>
+                            <span>Auto-Import: ${data.source_count > 0 ? '✅' : '❌'}</span>
+                        </div>
+                        ${data.sources.length > 0 ? `<div style="font-size: 0.9em; color: #666;">Files: ${data.sources.join(', ')}</div>` : ''}
+                        ${data.source_references_preview && data.source_references_preview.length > 0 ? 
+                            `<div style="font-size: 0.8em; color: #888; margin-top: 5px;">
+                                <strong>References:</strong><br>
+                                ${data.source_references_preview.map(ref => `• ${ref.source_name} (${ref.reference_type} ${ref.page_or_slide})`).join('<br>')}
+                            </div>` : 
+                            '<div style="font-size: 0.8em; color: #f44336;">⚠️ No source references found</div>'
+                        }
+                    `;
+                    generateBtn.disabled = !data.can_generate_ppt;
+                    generateBtn.style.opacity = data.can_generate_ppt ? '1' : '0.5';
+                } else {
+                    infoDiv.innerHTML = '<p style="color: #666; font-style: italic;">No active conversation</p>';
+                    generateBtn.disabled = true;
+                    generateBtn.style.opacity = '0.5';
+                }
+            } catch (error) {
+                console.error('Error updating conversation info:', error);
+            }
+        }
+
+        async function clearConversation() {
+            try {
+                const response = await fetch('/api/clear-conversation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    addMessage('🗑️ Conversation cleared. Next PPT will only include sources from new conversations.', 'bot');
+                    updateConversationInfo();
+                } else {
+                    const data = await response.json();
+                    addMessage(`Error clearing conversation: ${data.error}`, 'bot');
+                }
+            } catch (error) {
+                addMessage(`Error clearing conversation: ${error.message}`, 'bot');
+            }
+        }
+
+        async function generatePPTFromCurrent() {
+            try {
+                const generateBtn = document.getElementById('generatePPTBtn');
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '⏳ Generating & Downloading...';
+                
+                addMessage('🔄 Reconstructing COMPLETE source documents from Pinecone vectors...', 'bot');
+                addMessage('📋 Rebuilding original document structure with all content...', 'bot');
+                
+                const response = await fetch('/api/generate-ppt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})  // Use current conversation data
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addMessage('✅ Complete document reconstructed with original structure!', 'bot');
+                    addMessage('🎯 Generating PowerPoint with actual slides using COM integration...', 'bot');
+                    
+                    // Auto-download the generated PPT
+                    if (data.download_url) {
+                        addMessage('📊 PowerPoint generated successfully! Starting automatic download...', 'bot');
+                        
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = data.download_url;
+                        downloadLink.download = data.presentation_path ? data.presentation_path.split('/').pop() : 'presentation.pptx';
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+                        
+                        addMessage('📥 PowerPoint downloaded to your browser! All temporary files cleaned up from server.', 'bot');
+                        addMessage('🧹 Source documents and generated files automatically deleted from local system.', 'bot');
+                    } else {
+                        addMessage(`📊 ${data.message || 'Presentation generated successfully'}`, 'bot');
+                    }
+                } else {
+                    addMessage(`❌ PPT Generation Error: ${data.error}`, 'bot');
+                    if (data.details) {
+                        addMessage(`Details: ${data.details}`, 'bot');
+                    }
+                }
+            } catch (error) {
+                addMessage(`❌ PPT Generation Error: ${error.message}`, 'bot');
+            } finally {
+                const generateBtn = document.getElementById('generatePPTBtn');
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '📊 Generate PPT from Current';
+                updateConversationInfo();
+            }
+        }
+    </script>
+</body>
+</html>
