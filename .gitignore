@@ -1,107 +1,46 @@
-# ============================================================================
-# Document Chat Assistant - Git Ignore File
-# ============================================================================
-# This file specifies which files and directories should be ignored by Git
-# to prevent sensitive data and temporary files from being committed.
-# ============================================================================
-
-# Environment Variables and Secrets
-# ----------------------------------------------------------------------------
-.env                            # Environment configuration with API keys
-.env.local                      # Local environment overrides
-.env.production                 # Production environment variables
-*.key                           # Any key files
-secrets/                        # Secrets directory
 
 # Python
-# ----------------------------------------------------------------------------
-__pycache__/                    # Python bytecode cache
-*.py[cod]                       # Python compiled files
-*$py.class                      # Python class files
-*.so                            # Shared objects
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Virtual Environments
-# ----------------------------------------------------------------------------
-.venv/                          # Virtual environment directory
-venv/                           # Alternative virtual environment name
-env/                            # Another common virtual environment name
-ENV/                            # Environment directory
+# Virtual Environment
+.venv/
+venv/
+ENV/
 
-# IDE and Editor Files
-# ----------------------------------------------------------------------------
-.vscode/                        # Visual Studio Code settings
-.idea/                          # PyCharm/IntelliJ settings
-*.swp                           # Vim swap files
-*.swo                           # Vim swap files
-*~                              # Backup files
-.DS_Store                       # macOS directory metadata
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+!.env.example
 
-# Application Logs and Temporary Files
-# ----------------------------------------------------------------------------
-*.log                           # All log files
-logs/                           # Log directory
-chatbot.log                     # Application-specific log file
-temp/                           # Temporary files directory
-tmp/                            # Temporary files directory
+# Editor directories
+.idea/
+.vscode/
 
-# Generated Content
-# ----------------------------------------------------------------------------
-Data/generated_presentations/   # Generated PowerPoint presentations
-static/extracted_images/        # Extracted images from documents
-uploads/                        # Uploaded files directory
+# Project specific
+data/generated_presentations/
+*.pptx
+!data/sample_docs/*.pptx
 
-# Database Files
-# ----------------------------------------------------------------------------
-*.db                            # SQLite database files
-*.sqlite                        # SQLite database files
-*.sqlite3                       # SQLite database files
-
-# OS Generated Files
-# ----------------------------------------------------------------------------
-Thumbs.db                       # Windows thumbnail cache
-.DS_Store                       # macOS directory metadata
-*.tmp                           # Temporary files
-*.temp                          # Temporary files
-
-# Documentation Build Files
-# ----------------------------------------------------------------------------
-docs/_build/                    # Sphinx documentation build
-site/                           # MkDocs build directory
-
-# Testing and Coverage
-# ----------------------------------------------------------------------------
-.pytest_cache/                  # Pytest cache
-.coverage                       # Coverage reports
-htmlcov/                        # HTML coverage reports
-.tox/                           # Tox testing environments
-
-# Package Distribution
-# ----------------------------------------------------------------------------
-build/                          # Build directory
-dist/                           # Distribution directory
-*.egg-info/                     # Package metadata
-
-# Jupyter Notebooks
-# ----------------------------------------------------------------------------
-.ipynb_checkpoints/             # Jupyter notebook checkpoints
-
-# Node.js (if any frontend dependencies)
-# ----------------------------------------------------------------------------
-node_modules/                   # Node.js dependencies
-npm-debug.log*                  # NPM debug logs
-yarn-debug.log*                 # Yarn debug logs
-yarn-error.log*                 # Yarn error logs
-
-# Project-specific files
-# ----------------------------------------------------------------------------
-PROJECT_HANDOVER_SUMMARY.md     # Old handover summary, replaced by ARCHITECTURE_NOTES.md
-Chatbot_Presentation.zip        # Old presentation zip file
-
-# ============================================================================
-# Notes:
-# ============================================================================
-# - Always review files before committing to ensure no secrets are included
-# - The .env file should never be committed - use .env.example instead
-# - Generated presentations and logs should not be in version control
-# - Virtual environments should be recreated from requirements.txt
-# ============================================================================
+# Logs
+*.log

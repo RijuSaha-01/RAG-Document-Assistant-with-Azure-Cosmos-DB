@@ -1,126 +1,81 @@
-# 🤖 RAG Document Assistant with Azure Cosmos DB
 
-This project, built and maintained by **<YOUR NAME>**, is a sophisticated AI-powered document chatbot. I designed, refactored, and documented this application to serve as a portfolio piece showcasing my skills in RAG systems, backend engineering, and cloud architecture. It processes PDFs, PowerPoint presentations, and Word documents, using Azure Cosmos DB for MongoDB vCore for scalable vector similarity search, and enables intelligent conversations with documents through advanced AI capabilities.
+# RAG Document Assistant with Azure Cosmos DB
 
-## 👤 About the Developer
+An intelligent document assistant that uses Retrieval-Augmented Generation (RAG) to chat with your documents (PDF, DOCX, PPTX) and generate PowerPoint summaries. built with Python, Azure Cosmos DB for MongoDB vCore (Vector Search), and OpenAI GPT-4o.
 
-I am a software engineer based in **<YOUR CITY, COUNTRY>** with a strong focus on building intelligent, scalable, and production-ready applications. My primary areas of expertise include Retrieval-Augmented Generation (RAG) systems, cloud computing (especially Azure), and backend engineering for LLM-powered applications.
+## 🚀 Features
 
-- **GitHub**: [<YOUR GITHUB URL>](<YOUR GITHUB URL>)
-- **LinkedIn**: [<YOUR LINKEDIN URL>](<YOUR LINKEDIN URL>)
-- **Portfolio**: [<YOUR PORTFOLIO URL OR “N/A”>](<YOUR PORTFOLIO URL OR “N/A”>)
+*   **Multi-Format Support**: Ingest PDF, Word, and PowerPoint documents.
+*   **Vector Search**: Uses Azure Cosmos DB as a high-performance vector store.
+*   **Smart Retrieval**: Semantically searches documents to find relevant context.
+*   **Presentation Generation**: Automatically creates PPT summaries of the answer (Windows COM integration optional but supported).
+*   **Clean Architecture**: Modular design separating ingestion, retrieval, and generation logic.
 
-## 🛠️ What I Implemented / Refactored
+## 🛠️ Tech Stack
 
-As the sole developer for this version, I was responsible for the architecture, implementation, and documentation. Here are the key contributions I made:
+*   **Language**: Python 3.10+
+*   **Database**: Azure Cosmos DB for MongoDB vCore
+*   **AI/LLM**: OpenAI GPT-4o, text-embedding-3-large
+*   **Framework**: Flask (API)
+*   **Tools**: LangChain, PyMuPDF, python-pptx
 
-- **Refactored the Backend**: I architected and refactored the Python backend into a production-ready and modular structure. This includes a Flask REST API, a dedicated `CosmosDBManager` for database operations, a `DocumentProcessor` for handling uploads, and a `PresentationGenerator` for automated PowerPoint creation.
-- **Enhanced Frontend Functionality (v3.0)**: I implemented and enhanced the frontend-driven features, including LLM query expansion, smart reranking of search results, metadata enrichment for better filtering, document similarity analysis, and the unique auto-PPT generation capability.
-- **Wrote and Consolidated Documentation**: I authored the comprehensive documentation, including setup guides, troubleshooting steps, performance notes, and a setup validation script (`setup_validator.py`) to ensure a smooth developer experience.
-- **Designed the System Architecture**: I designed the end-to-end data flow, from document ingestion and vectorization to context retrieval and response generation, ensuring a scalable and efficient RAG pipeline.
+## 📦 Project Structure
 
-## ✨ Key Features
-
-- 📄 **Multi-format Document Support**: Process PDF, PPTX, DOCX, PPTM, and DOCM files.
-- 🔍 **Advanced Vector Search**: Cosmos DB-powered similarity search with intelligent fallback.
-- 🤖 **GPT-4o Integration**: Utilizes advanced language models for intelligent query processing.
-- 📊 **Auto-PowerPoint Generation**: Create presentations from conversation context with COM integration.
-- 🔄 **Document Similarity Analysis**: Find and analyze related documents in your collection.
-- 🌐 **Modern Web Interface**: Clean, responsive UI with real-time chat functionality.
-- 🛡️ **Robust Error Handling**: Comprehensive error recovery and logging system.
-- 🚀 **Production Ready**: Optimized for performance with batch processing and caching.
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Azure Cosmos DB for MongoDB vCore account
-- OpenAI API key
-- Windows OS (for PowerPoint COM integration - this feature is optional)
-
-### Installation & Setup
-
-1. **Clone and Navigate**
-   ```bash
-   git clone <repository-url>
-   cd rag-doc-assistant-<yourname>
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure Environment**
-   
-   Create a `.env` file in the project root:
-   ```env
-   # OpenAI Configuration
-   OPENAI_API_KEY=your_openai_api_key_here
-   
-   # Azure Cosmos DB Configuration
-   COSMOS_DB_CONNECTION_STRING=mongodb://your-account:your-key@your-account.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@your-account@
-   ```
-
-4. **Run the Application**
-   ```bash
-   # Simple run (recommended)
-   python run.py
-   ```
-
-5. **Access the Application**
-   
-   Open your browser and navigate to: `http://127.0.0.1:5000`
-
-## 🏗️ Architecture Overview
-
-For a detailed breakdown of the architecture, design decisions, and potential future improvements, please see [ARCHITECTURE_NOTES.md](./ARCHITECTURE_NOTES.md).
-
-### Core Components
 ```
-├── api.py                    # Flask REST API server with all endpoints
-├── cosmos_chatbot.py         # Main chatbot logic and conversation management
-├── cosmos_db_manager.py      # Cosmos DB operations and vector search
-├── document_processor.py     # Multi-format document processing and chunking
-├── presentation_generator.py # PowerPoint generation with COM integration
-├── run.py                    # Application launcher with validation
-├── static/
-│   └── index.html           # Modern web interface
-├── Data/                    # Document storage and generated presentations
-├── .env                     # Environment configuration (create this)
-└── requirements.txt         # Python dependencies
+rag-document-assistant/
+├── src/
+│   ├── app.py              # API functionality
+│   ├── rag_pipeline.py     # Core RAG logic
+│   ├── document_loader.py  # File processing
+│   ├── vector_store.py     # Database interactions
+│   ├── presentation.py     # PPTX generation
+│   └── config.py           # Settings
+├── tests/                  # Basic verification tests
+├── data/                   # Document storage
+└── requirements.txt        # Dependencies
 ```
 
-## 🔧 API Endpoints
+## 🏃‍♂️ Quick Start
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Serve web interface |
-| `/api/chat` | POST | Process chat messages and return AI responses |
-| `/api/add` | POST | Upload and process new documents |
-| `/api/list` | GET | List all documents in knowledge base |
-| `/api/delete` | POST | Remove documents from knowledge base |
-| `/api/analyze` | POST | Analyze document similarity |
-| `/api/generate-ppt` | POST | Generate PowerPoint from conversation |
-| `/api/download-ppt` | GET | Download generated presentations |
-| `/health` | GET | System health and status check |
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/rag-document-assistant.git
+    cd rag-document-assistant
+    ```
 
-## 🔍 Troubleshooting
+2.  **Set up Environment**
+    ```bash
+    # Create virtual env
+    python -m venv .venv
+    
+    # Activate (Windows)
+    .venv\Scripts\activate
+    
+    # Install dependencies
+    pip install -r requirements.txt
+    ```
 
-### Common Issues
+3.  **Configure Credentials**
+    Copy `.env.example` to `.env` and fill in your keys:
+    ```bash
+    OPENAI_API_KEY=sk-...
+    COSMOS_DB_CONNECTION_STRING=mongodb+srv://...
+    ```
 
-1. **Installation Problems**: Ensure you are using Python 3.8+ and have installed all packages from `requirements.txt`.
-2. **Environment Configuration**: Run `python setup_validator.py` to check if your `.env` file is set up correctly.
-3. **Database Connection**: Verify your Cosmos DB connection string and ensure your IP is whitelisted in the Azure portal if network restrictions are in place.
-4. **PowerPoint Generation Issues**: This feature requires a Windows OS with PowerPoint installed.
+4.  **Run the Server**
+    ```bash
+    python -m src.app
+    ```
 
-## 📄 License
+## 📝 Learning Outcomes
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+This project demonstrates:
+*   Implementation of a production-like RAG pipeline.
+*   Handling diverse unstructured data formats.
+*   Integration with cloud-native vector databases.
+*   Writing clean, modular, and maintainable Python code.
 
-This project is for educational and development purposes. Please ensure compliance with OpenAI and Azure terms of service. Others are welcome to clone and modify the project for learning and experimentation, as long as they respect the license and provider terms.
+## ⚠️ Limitations
 
----
-
-**Suggested GitHub topics**: `rag`, `azure-cosmos-db`, `openai`, `flask`, `llm`, `document-chat`, `vector-search`
+*   **Presentation Generation**: The high-fidelity "Slide Copy" feature uses Windows COM and requires PowerPoint to be installed on the host machine. A basic fallback exists for other OSs.
+*   **Database**: Meant to run with Azure Cosmos DB vCore; easy to adapt for local Chroma/FAISS.
