@@ -1,81 +1,154 @@
 
 # RAG Document Assistant with Azure Cosmos DB
 
-An intelligent document assistant that uses Retrieval-Augmented Generation (RAG) to chat with your documents (PDF, DOCX, PPTX) and generate PowerPoint summaries. built with Python, Azure Cosmos DB for MongoDB vCore (Vector Search), and OpenAI GPT-4o.
+A **portfolio / learning project** that demonstrates a **Retrieval-Augmented Generation (RAG)** pipeline using **Azure Cosmos DB (MongoDB API)** and **OpenAI models**.
 
-## 🚀 Features
+This project is designed for **educational purposes** and to showcase understanding of modern AI application patterns — it is **not production software**.
 
-*   **Multi-Format Support**: Ingest PDF, Word, and PowerPoint documents.
-*   **Vector Search**: Uses Azure Cosmos DB as a high-performance vector store.
-*   **Smart Retrieval**: Semantically searches documents to find relevant context.
-*   **Presentation Generation**: Automatically creates PPT summaries of the answer (Windows COM integration optional but supported).
-*   **Clean Architecture**: Modular design separating ingestion, retrieval, and generation logic.
+---
 
-## 🛠️ Tech Stack
+## 🚀 What This Project Does
 
-*   **Language**: Python 3.10+
-*   **Database**: Azure Cosmos DB for MongoDB vCore
-*   **AI/LLM**: OpenAI GPT-4o, text-embedding-3-large
-*   **Framework**: Flask (API)
-*   **Tools**: LangChain, PyMuPDF, python-pptx
+- Ingests documents (PDF, TXT, DOCX)
+- Splits text into chunks
+- Generates embeddings using OpenAI
+- Stores embeddings in Azure Cosmos DB (vector search)
+- Retrieves relevant chunks for a user query
+- Generates an AI-assisted answer using retrieved context
 
-## 📦 Project Structure
+---
+
+## 🧠 How RAG Works (Simplified)
 
 ```
-rag-document-assistant/
+
+User Question
+↓
+Vector Search (Cosmos DB)
+↓
+Relevant Document Chunks
+↓
+Prompt + Context
+↓
+LLM Answer
+
+```
+
+---
+
+## 🛠 Tech Stack
+
+- Python
+- OpenAI API
+- Azure Cosmos DB (MongoDB API + vector search)
+- Flask
+- PyPDF / python-docx
+
+---
+
+## 📂 Project Structure
+
+```
+
+.
 ├── src/
-│   ├── app.py              # API functionality
-│   ├── rag_pipeline.py     # Core RAG logic
-│   ├── document_loader.py  # File processing
-│   ├── vector_store.py     # Database interactions
-│   ├── presentation.py     # PPTX generation
-│   └── config.py           # Settings
-├── tests/                  # Basic verification tests
-├── data/                   # Document storage
-└── requirements.txt        # Dependencies
+│   ├── app.py
+│   ├── rag_pipeline.py
+│   ├── document_processor.py
+│   ├── vector_store.py
+│   ├── presentation.py
+│   └── config.py
+├── tests/
+│   └── test_basic_flow.py
+├── .env.example
+├── .gitignore
+└── README.md
+
 ```
 
-## 🏃‍♂️ Quick Start
+---
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/yourusername/rag-document-assistant.git
-    cd rag-document-assistant
-    ```
+## ⚙️ Setup Instructions
 
-2.  **Set up Environment**
-    ```bash
-    # Create virtual env
-    python -m venv .venv
-    
-    # Activate (Windows)
-    .venv\Scripts\activate
-    
-    # Install dependencies
-    pip install -r requirements.txt
-    ```
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/RijuSaha-01/RAG-Document-Assistant-with-Azure-Cosmos-DB
+cd RAG-Document-Assistant-with-Azure-Cosmos-DB
+```
 
-3.  **Configure Credentials**
-    Copy `.env.example` to `.env` and fill in your keys:
-    ```bash
-    OPENAI_API_KEY=sk-...
-    COSMOS_DB_CONNECTION_STRING=mongodb+srv://...
-    ```
+### 2️⃣ Create virtual environment
 
-4.  **Run the Server**
-    ```bash
-    python -m src.app
-    ```
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+```
 
-## 📝 Learning Outcomes
+### 3️⃣ Install dependencies
 
-This project demonstrates:
-*   Implementation of a production-like RAG pipeline.
-*   Handling diverse unstructured data formats.
-*   Integration with cloud-native vector databases.
-*   Writing clean, modular, and maintainable Python code.
+```bash
+pip install -r requirements.txt
+```
 
-## ⚠️ Limitations
+### 4️⃣ Environment variables
 
-*   **Presentation Generation**: The high-fidelity "Slide Copy" feature uses Windows COM and requires PowerPoint to be installed on the host machine. A basic fallback exists for other OSs.
-*   **Database**: Meant to run with Azure Cosmos DB vCore; easy to adapt for local Chroma/FAISS.
+```bash
+cp .env.example .env
+```
+
+Fill in your own keys inside `.env`.
+
+---
+
+## ▶️ Running the App
+
+```bash
+python -m src.app
+```
+
+---
+
+## 🧪 Running Tests
+
+```bash
+pytest
+```
+
+---
+
+## ⚠️ Platform Limitations
+
+* `presentation.py` uses **Windows COM automation**
+* PowerPoint generation works **only on Windows**
+* This feature is optional and not required for core RAG functionality
+
+---
+
+## 🔐 Security Notes
+
+* No secrets are committed to this repository
+* `.env` files must remain local
+* Always rotate keys if you accidentally commit them
+
+---
+
+## 📌 Limitations
+
+* No authentication
+* Minimal error handling
+* Designed for small-scale experimentation
+* No production deployment setup
+
+---
+
+## 🔮 Future Improvements
+
+* Better chunking strategies
+* Metadata-based retrieval
+* UI frontend
+* Cross-platform document export
+
+---
+
+## 📄 License
+
+MIT License
