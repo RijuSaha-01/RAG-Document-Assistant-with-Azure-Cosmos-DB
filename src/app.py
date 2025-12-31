@@ -6,7 +6,7 @@ from src.rag_pipeline import RAGPipeline
 from src.config import Config
 from src.utils import setup_logging
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 logger = setup_logging(__name__)
 
 # Initialize Pipeline
@@ -57,6 +57,11 @@ def upload():
 @app.route('/health')
 def health():
     return jsonify({"status": "ok", "pipeline_ready": pipeline is not None})
+
+@app.route('/')
+def root():
+    """Serve the main web interface"""
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
