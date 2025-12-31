@@ -8,10 +8,11 @@ from src.utils import setup_logging
 
 logger = setup_logging(__name__)
 
-class DocumentLoader:
-    """Handles loading and chunking of documents"""
+class DocumentProcessor:
+    """Handles loading and chunking of documents (PDF, DOCX, PPTX)"""
     
     def __init__(self, chunk_size=800, chunk_overlap=100):
+        # We use a recursive splitter to preserve paragraph and sentence boundaries
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
@@ -20,8 +21,7 @@ class DocumentLoader:
 
     def process_file(self, file_path: str) -> List[Dict[str, Any]]:
         """
-        Process a single file and return chunks.
-        Supports: .pdf, .docx, .pptx
+        Process a single file and return chunks with metadata.
         """
         ext = os.path.splitext(file_path)[1].lower()
         filename = os.path.basename(file_path)
@@ -30,6 +30,7 @@ class DocumentLoader:
         metadata = {"source": filename, "type": ext}
         
         try:
+            # Format-specific extraction
             if ext == '.pdf':
                 text_content = self._read_pdf(file_path)
             elif ext == '.docx':
@@ -44,17 +45,18 @@ class DocumentLoader:
                 logger.warning(f"No text extracted from {filename}")
                 return []
                 
-            # Create chunks
+            # Create chunks using LangChain
             chunks = self.text_splitter.create_documents([text_content])
             
-            # Format for Vector Store
+            # Format for Vector Store ingestion
             processed_chunks = []
             for i, chunk in enumerate(chunks):
+                # Generate a unique ID for each chunk for upserting
                 doc_id = hashlib.md5(f"{filename}_{i}".encode()).hexdigest()
                 processed_chunks.append({
                     "id": doc_id,
                     "text": chunk.page_content,
-                    "embedding": [], # To be filled by embedding model
+                    "embedding": [], # Populated by the pipeline
                     "metadata": {
                         **metadata,
                         "chunk_index": i
@@ -65,7 +67,7 @@ class DocumentLoader:
             return processed_chunks
             
         except Exception as e:
-            logger.error(f"Error treating file {filename}: {e}")
+            logger.error(f"Error processing file {filename}: {e}")
             return []
 
     def _read_pdf(self, path: str) -> str:
@@ -77,8 +79,8 @@ class DocumentLoader:
             for page in reader.pages:
                 text.append(page.extract_text() or "")
             return "\n".join(text)
-        except ImportError:
-            logger.error("pypdf not installed")
+        except Exception as e:
+            logger.error(f"PDF read error: {e}")
             return ""
 
     def _read_docx(self, path: str) -> str:
@@ -87,8 +89,8 @@ class DocumentLoader:
         try:
             doc = docx.Document(path)
             return "\n".join([p.text for p in doc.paragraphs])
-        except ImportError:
-            logger.error("python-docx not installed")
+        except Exception as e:
+            logger.error(f"DOCX read error: {e}")
             return ""
 
     def _read_pptx(self, path: str) -> str:
@@ -102,6 +104,6 @@ class DocumentLoader:
                     if hasattr(shape, "text"):
                         text.append(shape.text)
             return "\n".join(text)
-        except ImportError:
-            logger.error("python-pptx not installed")
+        except Exception as e:
+            logger.error(f"PPTX read error: {e}")
             return ""
